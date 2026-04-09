@@ -12,6 +12,8 @@ def get_noline_phi(a,b,df,f):
     return phi
 
 def check_interval(f, a, b):
+    if abs(a) > 1000 or abs(b) > 1000:
+        raise ValueError("Слишком большой интервал. Возможен overflow.")
     if a >= b:
         raise ValueError("a должно быть меньше b")
     fa, fb = f(a), f(b)
