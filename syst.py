@@ -10,31 +10,32 @@ from simple_iteration_system import simple_iteration_system
 import simple_help
 
 class SystemApp:
+    def make_phi3(self, x0, y0):
+        if x0 >= 0:
+            phi1 = lambda x, y: math.sqrt(max(5 - y ** 2, 0))
+            phi2 = lambda x, y: x - 1
+        else:
+            phi1 = lambda x, y: y + 1
+            phi2 = lambda x, y: -math.sqrt(max(5 - x ** 2, 0))
+        return phi1, phi2
     def __init__(self, parent):
         self.parent = parent
 
-        def phi1(x, y):
-            val = 1 - 0.5 * y ** 2
-            if val < 0:
-                raise ValueError("φ1: подкоренное < 0")
-            return math.sqrt(val)
-
-        def phi2(x, y):
-            val = 1 - (x ** 2) / 3
-            if val < 0:
-                raise ValueError("φ2: подкоренное < 0")
-            return math.sqrt(val)
         # --- Конфигурация систем ---
         self.systems = {
             "Система 1": {
-                "equations": "⎧ 2x² + y² - 2 = 0\n⎨\n⎩ x² + 3y² - 3 = 0",
-                "phi1": lambda x, y: x-0.1*(2 * x ** 2 + y ** 2 - 2),
-                "phi2": lambda x, y: y-0.1*(x ** 2 + 3 * y ** 2 - 3),
-                "f1": lambda x, y: 2 * x ** 2 + y ** 2 - 2,
-                "f2": lambda x, y: x ** 2 + 3 * y ** 2 - 3,
-                "note": "Решение: x≈0.707, y≈1.0",
-                "x0": "1.0", "y0": "1.0"
-            },
+    "equations": "⎧ 2x² + y² - 2 = 0\n⎨\n⎩ x² + 3y² - 3 = 0",
+    "phi1": lambda x, y: math.copysign(
+        math.sqrt(max((2 - y**2) / 2, 0)), x
+    ),
+    "phi2": lambda x, y: math.copysign(
+        math.sqrt(max((3 - x**2) / 3, 0)), y
+    ),
+    "f1": lambda x, y: 2 * x**2 + y**2 - 2,
+    "f2": lambda x, y: x**2 + 3 * y**2 - 3,
+    "note": "Решение: x≈±0.707, y≈±1.0",
+    "x0": "1.0", "y0": "1.0"
+},
             "Система 2": {
                 "equations": "⎧ sin(x) - y = 0\n⎨\n⎩ cos(y) - x = 0",
                 "phi1": lambda x, y: math.cos(y),
@@ -45,14 +46,14 @@ class SystemApp:
                 "x0": "0.5", "y0": "0.5"
             },
             "Система 3": {
-                "equations": "⎧ x² + y² = 5\n⎨\n⎩ x - y = 1",
-                "phi1": phi1,
-                "phi2": phi2,
-                "f1": lambda x, y: x ** 2 + y ** 2 - 5,
-                "f2": lambda x, y: x - y - 1,
-                "note": "Решение: x≈2.23, y≈1.23",
-                "x0": "2.0", "y0": "1.0"
-            }
+    "equations": "⎧ x² + y² = 5\n⎨\n⎩ x - y = 1",
+    "phi1": lambda x, y: x - 0.1 * (x**2 + y**2 - 5),
+    "phi2": lambda x, y: y - 0.1 * (x - y - 1),
+    "f1": lambda x, y: x**2 + y**2 - 5,
+    "f2": lambda x, y: x - y - 1,
+    "note": "Корни: (2, 1) и (-1, -2) — зависит от x0, y0",
+    "x0": "2.0", "y0": "1.0"
+}
         }
 
         self._setup_ui()
@@ -188,6 +189,10 @@ class SystemApp:
             sys_key = self.sys_var.get()
             data = self.systems[sys_key]
             phi1, phi2 = data["phi1"], data["phi2"]
+            if sys_key == "Система 3":
+                phi1, phi2 = self.make_phi3(x0,y0)  # ← добавить эту строку
+
+            f1, f2 = data["f1"], data["f2"]
             f1, f2 = data["f1"], data["f2"]
 
             # Проверка сходимости (оценка нормы Якоби)
