@@ -1,3 +1,4 @@
+import math
 def get_noline_phi(a,b,df,f):
     xs = [a + (b - a) * i / 10 for i in range(11)]
     max_df = max([abs(df(x)) for x in xs])
@@ -10,6 +11,14 @@ def get_noline_phi(a,b,df,f):
         if abs(phi_der(x))>=1:
             raise ValueError(f"Условие сходимости не выполняется, {x,phi(x),lambd}")
     return phi
+def make_phi3(x0, y0):
+    if x0 >= 0:
+        phi1 = lambda x, y: math.sqrt(max(5 - y ** 2, 0))
+        phi2 = lambda x, y: x - 1
+    else:
+        phi1 = lambda x, y: y + 1
+        phi2 = lambda x, y: -math.sqrt(max(5 - x ** 2, 0))
+    return phi1, phi2
 
 def check_interval(f, a, b):
     if abs(a) > 1000 or abs(b) > 1000:
@@ -34,9 +43,9 @@ def check_interval(f, a, b):
         except:
             pass
     if sign_changes > 1:
-        raise ValueError("На интервале более одного корня!")
+        raise ValueError("На интервале более одного корня")
     if sign_changes == 0:
-        raise ValueError("Корень не найден (табуляция)")
+        raise ValueError("Корень не найден")
 
 def check_convergence_approx(phi1, phi2, x0, y0):
     x, y = x0, y0

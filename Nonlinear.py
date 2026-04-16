@@ -193,19 +193,16 @@ class NonlinearApp:
             method = self.method_var.get()
 
 
-            # --- ПРОВЕРКА ОБЛАСТИ ОПРЕДЕЛЕНИЯ (для логарифма) ---
             if func_name == "ln(x) - 1/x":
                 if a <= 0 or b <= 0:
                     messagebox.showerror("Ошибка области определения",
                         "Функция ln(x) определена только при x > 0!\n"
                         f"Ваши значения: a={a}, b={b}")
                     return
-                # Дополнительно: если интервал пересекает 0 (a < 0 < b)
                 if a < 0 < b:
                     messagebox.showerror("Ошибка области определения",
                         "Интервал не должен содержать 0!")
                     return
-            # -------------------------------------------------------
 
             simple_help.check_interval(f, a, b)
 

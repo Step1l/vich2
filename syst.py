@@ -10,14 +10,7 @@ from simple_iteration_system import simple_iteration_system
 import simple_help
 
 class SystemApp:
-    def make_phi3(self, x0, y0):
-        if x0 >= 0:
-            phi1 = lambda x, y: math.sqrt(max(5 - y ** 2, 0))
-            phi2 = lambda x, y: x - 1
-        else:
-            phi1 = lambda x, y: y + 1
-            phi2 = lambda x, y: -math.sqrt(max(5 - x ** 2, 0))
-        return phi1, phi2
+
     def __init__(self, parent):
         self.parent = parent
 
@@ -47,8 +40,6 @@ class SystemApp:
             },
             "Система 3": {
     "equations": "⎧ x² + y² = 5\n⎨\n⎩ x - y = 1",
-    "phi1": lambda x, y: x - 0.1 * (x**2 + y**2 - 5),
-    "phi2": lambda x, y: y - 0.1 * (x - y - 1),
     "f1": lambda x, y: x**2 + y**2 - 5,
     "f2": lambda x, y: x - y - 1,
     "note": "Корни: (2, 1) и (-1, -2) — зависит от x0, y0",
@@ -188,10 +179,11 @@ class SystemApp:
             # Получение данных системы
             sys_key = self.sys_var.get()
             data = self.systems[sys_key]
-            phi1, phi2 = data["phi1"], data["phi2"]
-            if sys_key == "Система 3":
-                phi1, phi2 = self.make_phi3(x0,y0)  # ← добавить эту строку
 
+            if sys_key == "Система 3":
+                phi1, phi2 = simple_help.make_phi3(x0,y0)  # ← добавить эту строку
+            else:
+                phi1, phi2 = data["phi1"], data["phi2"]
             f1, f2 = data["f1"], data["f2"]
             f1, f2 = data["f1"], data["f2"]
 
